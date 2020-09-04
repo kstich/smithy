@@ -1,0 +1,51 @@
+{
+  "typeName": "Smithy::TestService::Basil",
+  "description": "This is an herb.",
+  "properties": {
+    "BazImplicitWriteProperty": {
+      "schema": {
+        "type": "string"
+      }
+    },
+    "BazId": {
+      "schema": {
+        "type": "string"
+      }
+    },
+    "BazImplicitFullyMutableProperty": {
+      "schema": {
+        "type": "string"
+      }
+    },
+    "BarId": {
+      "schema": {
+        "type": "string"
+      }
+    },
+    "BazImplicitReadProperty": {
+      "schema": {
+        "type": "string"
+      }
+    },
+    "BazImplicitCreateProperty": {
+      "schema": {
+        "type": "string"
+      }
+    }
+  },
+  "createOnlyProperties": [
+    "/properties/BazImplicitCreateProperty"
+  ],
+  "readOnlyProperties": [
+    "/properties/BazImplicitReadProperty",
+    "/properties/BazId",
+    "/properties/BarId"
+  ],
+  "writeOnlyProperties": [
+    "/properties/BazImplicitWriteProperty"
+  ],
+  "primaryIdentifier": [
+    "/properties/BazId",
+    "/properties/BarId"
+  ]
+}
