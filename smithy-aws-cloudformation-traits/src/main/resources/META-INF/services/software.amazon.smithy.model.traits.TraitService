@@ -1,0 +1,8 @@
+software.amazon.smithy.aws.cloudformation.traits.AdditionalIdentifierTrait$Provider
+software.amazon.smithy.aws.cloudformation.traits.CreateOnlyPropertyTrait$Provider
+software.amazon.smithy.aws.cloudformation.traits.ExcludePropertyTrait$Provider
+software.amazon.smithy.aws.cloudformation.traits.MutablePropertyTrait$Provider
+software.amazon.smithy.aws.cloudformation.traits.PropertyNameTrait$Provider
+software.amazon.smithy.aws.cloudformation.traits.ReadOnlyPropertyTrait$Provider
+software.amazon.smithy.aws.cloudformation.traits.ResourceTrait$Provider
+software.amazon.smithy.aws.cloudformation.traits.WriteOnlyPropertyTrait$Provider
