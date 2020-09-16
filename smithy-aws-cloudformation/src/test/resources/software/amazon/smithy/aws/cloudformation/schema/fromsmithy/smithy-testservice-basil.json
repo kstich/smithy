@@ -3,34 +3,22 @@
   "description": "This is an herb.",
   "properties": {
     "BazImplicitWriteProperty": {
-      "schema": {
-        "type": "string"
-      }
+      "type": "string"
     },
     "BazId": {
-      "schema": {
-        "type": "string"
-      }
+      "type": "string"
     },
     "BazImplicitFullyMutableProperty": {
-      "schema": {
-        "type": "string"
-      }
+      "type": "string"
     },
     "BarId": {
-      "schema": {
-        "type": "string"
-      }
+      "type": "string"
     },
     "BazImplicitReadProperty": {
-      "schema": {
-        "type": "string"
-      }
+      "type": "string"
     },
     "BazImplicitCreateProperty": {
-      "schema": {
-        "type": "string"
-      }
+      "type": "string"
     }
   },
   "createOnlyProperties": [

@@ -107,7 +107,7 @@ structure PutBarRequest {
     @required
     barId: BarId,
 
-    barImplicitWriteProperty: String,
+    barImplicitFullProperty: String,
 }
 
 @readonly

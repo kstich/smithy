@@ -34,9 +34,4 @@ public final class CoreExtension implements Smithy2CloudFormationExtension {
                 new JsonAddMapper(),
                 new MutabilityMapper());
     }
-
-    @Override
-    public List<JsonSchemaMapper> getJsonSchemaMappers() {
-        return ListUtils.of(new CloudFormationJsonSchemaMapper());
-    }
 }

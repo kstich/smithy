@@ -19,6 +19,7 @@ import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 import java.util.Optional;
 import java.util.ServiceLoader;
@@ -27,10 +28,12 @@ import software.amazon.smithy.aws.cloudformation.schema.CloudFormationConfig;
 import software.amazon.smithy.aws.cloudformation.schema.CloudFormationException;
 import software.amazon.smithy.aws.cloudformation.schema.model.Property;
 import software.amazon.smithy.aws.cloudformation.schema.model.ResourceSchema;
+import software.amazon.smithy.aws.cloudformation.traits.PropertyNameTrait;
 import software.amazon.smithy.aws.cloudformation.traits.ResourceIndex;
 import software.amazon.smithy.aws.cloudformation.traits.ResourceTrait;
 import software.amazon.smithy.jsonschema.JsonSchemaConverter;
 import software.amazon.smithy.jsonschema.JsonSchemaMapper;
+import software.amazon.smithy.jsonschema.PropertyNamingStrategy;
 import software.amazon.smithy.jsonschema.Schema;
 import software.amazon.smithy.jsonschema.SchemaDocument;
 import software.amazon.smithy.model.Model;
@@ -44,6 +47,7 @@ import software.amazon.smithy.model.shapes.ShapeId;
 import software.amazon.smithy.model.shapes.StructureShape;
 import software.amazon.smithy.model.traits.DocumentationTrait;
 import software.amazon.smithy.utils.ListUtils;
+import software.amazon.smithy.utils.StringUtils;
 
 public final class CloudFormationConverter {
 //    private static final Logger LOGGER = Logger.getLogger(CloudFormationConverter.class.getName());
@@ -183,6 +187,8 @@ public final class CloudFormationConverter {
         }
         mappers.sort(Comparator.comparingInt(CloudFormationMapper::getOrder));
 
+        jsonSchemaConverterBuilder.propertyNamingStrategy(getPropertyNamingStrategy());
+
         // Prepare a structure representing the CFN resource to be created.
         StructureShape pseudoResource = getPseudoResource(model, resourceShape);
         Model updatedModel = model.toBuilder().addShape(pseudoResource).build();
@@ -193,6 +199,24 @@ public final class CloudFormationConverter {
                 pseudoResource, config, jsonSchemaConverterBuilder.build());
 
         return new ConversionEnvironment(context, mappers);
+    }
+
+    private PropertyNamingStrategy getPropertyNamingStrategy() {
+        return (containingShape, member, config) -> {
+            // The explicit trait takes precedence.
+            Optional<PropertyNameTrait> trait = member.getTrait(PropertyNameTrait.class);
+            if (trait.isPresent()) {
+                return trait.get().getValue();
+            }
+
+            // Otherwise, respect the property capitalization setting.
+            String name = PropertyNamingStrategy.createMemberNameStrategy()
+                    .toPropertyName(containingShape, member, config);
+
+            return this.config.getDisableCapitalizedProperties()
+                    ? name
+                    : StringUtils.capitalize(name);
+        };
     }
 
     private static final class ConversionEnvironment {
@@ -233,7 +257,7 @@ public final class CloudFormationConverter {
             Property property = Property.builder()
                     .schema(schema)
                     .build();
-            builder.addProperty(context.getResolvedPropertyName(name), property);
+            builder.addProperty(name, property);
         });
 
         // Supply all the definitions that were created.

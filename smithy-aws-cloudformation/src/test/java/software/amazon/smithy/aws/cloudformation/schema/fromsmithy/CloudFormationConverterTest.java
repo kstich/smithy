@@ -100,4 +100,26 @@ public class CloudFormationConverterTest {
 
         Node.assertEquals(result.get("Smithy::TestService::FooResource"), expectedNode);
     }
+
+    @Test
+    public void createsAwsSqsQueueResource() {
+        Model model = Model.assembler()
+                .addImport(CloudFormationConverterTest.class.getResource("sqs.2012-11-05.smithy"))
+                // TODO Get this model fixed up with the other traits
+                .addImport("/Users/stickevi/Documents/Repositories/smithy/smithy-aws-traits/src/main/resources/META-INF/smithy")
+                .discoverModels()
+                .assemble()
+                .unwrap();
+
+        CloudFormationConfig config = new CloudFormationConfig();
+        config.setOrganizationName("AWS");
+        config.setService(ShapeId.from("com.amazonaws.sqs#AmazonSQS"));
+        config.setServiceName("SQS");
+        config.setDisableCapitalizedProperties(true);
+        Map<String, ObjectNode> result = CloudFormationConverter.create().config(config)
+                .convertToNodes(model);
+
+        assertEquals(result.keySet().size(), 1);
+        assertThat(result.keySet(), containsInAnyOrder(ListUtils.of("AWS::SQS::Queue").toArray()));
+    }
 }

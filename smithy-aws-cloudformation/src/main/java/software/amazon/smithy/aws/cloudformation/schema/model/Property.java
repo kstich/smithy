@@ -41,8 +41,7 @@ public final class Property implements ToNode, ToSmithyBuilder<Property> {
 
     @Override
     public Node toNode() {
-        ObjectNode.Builder builder = Node.objectNodeBuilder()
-                .withMember("schema", schema.toNode());
+        ObjectNode.Builder builder = schema.toNode().expectObjectNode().toBuilder();
 
         // Only serialize these properties if set to non-defaults.
         if (insertionOrder) {

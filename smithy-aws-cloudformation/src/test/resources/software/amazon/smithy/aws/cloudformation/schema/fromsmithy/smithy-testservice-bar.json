@@ -3,29 +3,19 @@
   "description": "A Bar resource, not that kind of bar though.",
   "properties": {
     "BarImplicitReadProperty": {
-      "schema": {
-        "type": "string"
-      }
+      "type": "string"
     },
     "BarValidAdditionalProperty": {
-      "schema": {
-        "type": "string"
-      }
+      "type": "string"
     },
     "BarId": {
-      "schema": {
-        "type": "string"
-      }
+      "type": "string"
     },
     "Arn": {
-      "schema": {
-        "type": "string"
-      }
+      "type": "string"
     },
     "BarImplicitWriteProperty": {
-      "schema": {
-        "type": "string"
-      }
+      "type": "string"
     }
   },
   "createOnlyProperties": [
@@ -34,9 +24,6 @@
   "readOnlyProperties": [
     "/properties/BarImplicitReadProperty",
     "/properties/Arn"
-  ],
-  "writeOnlyProperties": [
-    "/properties/BarImplicitWriteProperty"
   ],
   "primaryIdentifier": [
     "/properties/BarId"

@@ -16,29 +16,19 @@
   },
   "properties": {
     "FooValidCreateProperty": {
-      "schema": {
-        "type": "string"
-      }
+      "type": "string"
     },
     "FooValidWriteProperty": {
-      "schema": {
-        "type": "string"
-      }
+      "type": "string"
     },
     "FooValidFullyMutableProperty": {
-      "schema": {
-        "$ref": "#/definitions/ComplexProperty"
-      }
+      "$ref": "#/definitions/ComplexProperty"
     },
     "FooId": {
-      "schema": {
-        "type": "string"
-      }
+      "type": "string"
     },
     "FooValidReadProperty": {
-      "schema": {
-        "type": "string"
-      }
+      "type": "string"
     }
   },
   "createOnlyProperties": [

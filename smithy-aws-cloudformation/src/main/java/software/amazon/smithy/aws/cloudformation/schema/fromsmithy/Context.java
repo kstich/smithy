@@ -18,10 +18,10 @@ package software.amazon.smithy.aws.cloudformation.schema.fromsmithy;
 import software.amazon.smithy.aws.cloudformation.schema.CloudFormationConfig;
 import software.amazon.smithy.jsonschema.JsonSchemaConverter;
 import software.amazon.smithy.model.Model;
+import software.amazon.smithy.model.shapes.MemberShape;
 import software.amazon.smithy.model.shapes.ResourceShape;
 import software.amazon.smithy.model.shapes.ServiceShape;
 import software.amazon.smithy.model.shapes.StructureShape;
-import software.amazon.smithy.model.shapes.ToShapeId;
 import software.amazon.smithy.utils.StringUtils;
 
 public final class Context {
@@ -113,18 +113,9 @@ public final class Context {
      * @return Returns the JSON pointer to the property.
      */
     public String getPropertyPointer(String propertyName) {
-        return "/properties/" + getResolvedPropertyName(propertyName);
-    }
-
-    /**
-     * Gets the resolved property name based on config settings.
-     *
-     * @param propertyName The property name to resolve.
-     * @return The resolved property name.
-     */
-    public String getResolvedPropertyName(String propertyName) {
-        return config.getDisableCapitalizedProperties()
-                ? propertyName
-                : StringUtils.capitalize(propertyName);
+        String definitionPrefix = "#/definitions/" + getResourceStructure().getId().getName() + "/";
+        MemberShape member = getResourceStructure().getMember(propertyName).get();
+        return getJsonSchemaConverter().toPointer(member.getId())
+                .replace(definitionPrefix, "");
     }
 }

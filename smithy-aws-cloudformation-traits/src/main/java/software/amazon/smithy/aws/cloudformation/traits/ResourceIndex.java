@@ -86,11 +86,11 @@ public final class ResourceIndex implements KnowledgeIndex {
                         });
                     });
 
-                    // Use the put lifecycle's input to collect puttable properties.
+                    // Use the put lifecycle's input to collect put-able properties.
                     resource.getPut().ifPresent(operationId -> {
                         operationIndex.getInput(operationId).ifPresent(input -> {
                             updatePropertyMutabilities(resourceId, operationId, input,
-                                    SetUtils.of(ConstraintType.WRITE_ONLY), this::addWriteOnlyMutability);
+                                    SetUtils.of(), this::addWriteOnlyMutability);
                         });
                     });
 
@@ -311,17 +311,18 @@ public final class ResourceIndex implements KnowledgeIndex {
             // We've explicitly set identifier mutability based on how the
             // resource instance comes about, so only handle non-identifiers.
             if (!operationMemberIsIdentifier(resourceId, operationId, member)) {
-                // TODO Does this need a trait because people suck at naming?
-                //   Or do all members need to be up-cased in the documents?
                 String memberName = member.getMemberName();
-                Set<ConstraintType> explicitMutability = getExplicitMutability(member);
+                Optional<Set<ConstraintType>> explicitMutability = getExplicitMutability(member);
 
                 ResourcePropertyDefinition memberProperty = getProperties(resourceId).get(memberName);
-                if (memberProperty == null || !explicitMutability.isEmpty()) {
+                if (memberProperty == null || explicitMutability.isPresent()) {
+                    Set<ConstraintType> constraints = explicitMutability.isPresent()
+                            ? explicitMutability.get()
+                            : defaultMutabilities;
                     memberProperty = ResourcePropertyDefinition.builder()
                             .shapeId(member.getId())
-                            .constraints(explicitMutability.isEmpty() ? defaultMutabilities : explicitMutability)
-                            .hasExplicitConstraints(!explicitMutability.isEmpty())
+                            .constraints(constraints)
+                            .hasExplicitConstraints(explicitMutability.isPresent())
                             .build();
                 } else if (!memberProperty.hasExplicitConstraints()) {
                     memberProperty = memberProperty.toBuilder()
@@ -360,17 +361,19 @@ public final class ResourceIndex implements KnowledgeIndex {
         return false;
     }
 
-    private Set<ConstraintType> getExplicitMutability(MemberShape member) {
-        if (member.getMemberTrait(model, ReadOnlyPropertyTrait.class).isPresent()) {
-            return SetUtils.of(ConstraintType.READ_ONLY);
+    private Optional<Set<ConstraintType>> getExplicitMutability(MemberShape member) {
+        if (member.getMemberTrait(model, MutablePropertyTrait.class).isPresent()) {
+            return Optional.of(SetUtils.of());
+        } else if (member.getMemberTrait(model, ReadOnlyPropertyTrait.class).isPresent()) {
+            return Optional.of(SetUtils.of(ConstraintType.READ_ONLY));
         }
         if (member.getMemberTrait(model, CreateOnlyPropertyTrait.class).isPresent()) {
-            return SetUtils.of(ConstraintType.CREATE_ONLY);
+            return Optional.of(SetUtils.of(ConstraintType.CREATE_ONLY));
         }
         if (member.getMemberTrait(model, WriteOnlyPropertyTrait.class).isPresent()) {
-            return SetUtils.of(ConstraintType.WRITE_ONLY);
+            return Optional.of(SetUtils.of(ConstraintType.WRITE_ONLY));
         }
-        return SetUtils.of();
+        return Optional.empty();
     }
 
     private Set<ConstraintType> addReadOnlyMutability(Set<ConstraintType> constraintTypes) {

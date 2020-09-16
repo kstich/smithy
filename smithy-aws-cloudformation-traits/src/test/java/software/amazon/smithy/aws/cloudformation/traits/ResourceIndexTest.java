@@ -87,7 +87,7 @@ public class ResourceIndexTest {
                 "arn", SetUtils.of(ConstraintType.READ_ONLY),
                 "barValidAdditionalProperty", SetUtils.of(),
                 "barImplicitReadProperty", SetUtils.of(ConstraintType.READ_ONLY),
-                "barImplicitWriteProperty", SetUtils.of(ConstraintType.WRITE_ONLY));
+                "barImplicitFullProperty", SetUtils.of());
 
         ResourceData bazResource = new ResourceData();
         bazResource.resourceId = BAZ;
