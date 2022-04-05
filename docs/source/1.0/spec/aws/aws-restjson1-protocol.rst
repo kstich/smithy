@@ -315,8 +315,7 @@ standard responses with one additional component to distinguish which error
 is contained. New server-side protocol implementations MUST use a header field
 named ``X-Amzn-Errortype``. Clients MUST accept any one of the following: an
 additional header with the name ``X-Amzn-Errortype``, a body field with the
-name ``__type``, or a body field named ``code
-``. The value of this component
+name ``__type``, or a body field named ``code``. The value of this component
 SHOULD contain only the :token:`shape name <smithy:identifier>` of the error's
 :ref:`shape-id`.
 
